@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+  <!-- HERO SECTION -->
+  <div class="row align-items-center mb-5">
+    <div class="col-md-6">
+      <h1 class="fw-bold">About <span class="text-danger">OurShop</span></h1>
+      <p class="lead text-muted mt-3">
+        “A man’s dream will never die.”
+      </p>
+      <p>
+        Inspired by <strong>Whitebeard</strong>, we believe in strength, loyalty,
+        and protecting what matters most — our customers.
+      </p>
+    </div>
+
+    <div class="col-md-6 text-center">
+      <img src="{% static 'images/logo1.png' %}"
+           class="img-fluid"
+           alt="Whitebeard"
+           style="max-height: 250px;">
+    </div>
+  </div>
+
+  <!-- STORY SECTION -->
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">⚔ Our Philosophy</h5>
+          <p class="card-text">
+            Just like Whitebeard, we stand for honor, trust,
+            and putting people first.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">🏴‍☠ Our Mission</h5>
+          <p class="card-text">
+            Deliver quality products while building
+            a crew (community) that lasts forever.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">🔥 Our Promise</h5>
+          <p class="card-text">
+            No betrayal. No shortcuts.
+            Only honest service — like a true pirate legend.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

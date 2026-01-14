@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+
+        <!-- Image -->
+        <div class="col-md-5">
+          <div class="product-img-card">
+            <img src="{{ product.product_image.url }}"
+                 class="img-fluid"
+                 alt="{{ product.name }}">
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div class="col-md-7">
+            <h2>{{ product.name }}</h2>
+            <h4 class="text-success">Current Price : ₹{{ product.price }}</h4>
+
+            <div class="card mt-4 p-3 product-desc-card">
+              <h6 class="fw-bold mb-2">Product Description</h6>
+              <div class="text-muted">
+                {{ product.description|linebreaks }}
+              </div>
+            </div>
+            {% if product.stock > 0 %}
+                <div class="mt-3 d-flex align-items-center gap-3">
+                  <span class="badge bg-success">In Stock</span>
+                  <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success">
+                    Add to Cart
+                  </a>
+                </div>
+            {% else %}
+                <p class="text-danger">Out of Stock</p>
+            {% endif %}
+        </div>
+<div class="mt-5">
+  <h5 class="fw-bold">Customer Reviews</h5>
+  <hr>
+
+      {% if reviews %}
+        {% for review in reviews %}
+          <div class="border rounded p-3 mb-2">
+            <strong>{{ review.user.username }}</strong>
+            <span class="text-warning">
+              {% for i in "12345"|slice:review.rating %}
+                ★
+              {% endfor %}
+            </span>
+            <p class="mb-0">{{ review.comment }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-muted">No reviews yet.</p>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+         <hr>
+         <h6>Add a Review</h6>
+       
+         <form method="POST">
+           {% csrf_token %}
+           {{ form.rating}}
+           {{ form.comment }}
+           <button class="btn btn-success mt-2">Submit Review</button>
+         </form>
+       {% else %}
+         <p class="mt-3">
+           <a href="{% url 'login' %}">Login</a> to add a review.
+         </p>
+       {% endif %}
+    </div>
+</div>
+{% endblock %}

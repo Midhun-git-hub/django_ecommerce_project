@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+  <h3>Checkout</h3>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <h5>Select Address</h5>
+    {% for address in addresses %}
+      <div class="form-check">
+        <input class="form-check-input" type="radio"
+               name="address" value="{{ address.id }}" required>
+        <label class="form-check-label">
+          {{ address.fullname }}, {{ address.address }},
+          {{ address.city }} - {{ address.pincode }}
+        </label>
+      </div>
+    {% empty %}
+      <p>No address found. Please add one.</p>
+    {% endfor %}
+
+    <hr>
+
+    <h5>Order Summary</h5>
+    <ul class="list-group">
+      {% for item in cart_items %}
+        <li class="list-group-item d-flex justify-content-between">
+          {{ item.product.name }} × {{ item.quantity }}
+          <span>₹{{ item.total_price }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <h5 class="text-end mt-3">Total: ₹{{ total }}</h5>
+
+    <button class="btn btn-primary mt-3 w-100">
+      Place Order (COD)
+    </button>
+  </form>
+</div>
+
+{% endblock %}

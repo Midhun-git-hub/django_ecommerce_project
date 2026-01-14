@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<div class="wb-bg py-5">
+  <div class="container">
+  <div class="row align-items-center">
+
+    <!-- LEFT IMAGE -->
+    <div class="col-md-6 mb-4 mb-md-0 text-center">
+     <img 
+        src="{% static 'images/contactimg.jpg' %}" 
+        class="img-fluid rounded shadow wb-img"
+        alt="Whitebeard Theme"
+        style="max-height: 420px;"
+     >
+
+    </div>
+
+    <!-- CONTACT FORM -->
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0 wb-card">
+        <div class="card-body p-4">
+
+          <h3 class="fw-bold mb-3 text-dark wb-title">
+             Contact the Crew <span class="wb-accent">☠️</span>
+          </h3>
+          <p class="text-muted mb-4">
+            Got questions, feedback, or treasure to share? Drop us a message.
+          </p>
+
+          <form action="{% url "contact" %}" method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="name" class="form-control" placeholder="Your name" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Subject</label>
+              <input type="text" name="subject" class="form-control" placeholder="What’s this about?" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Message</label>
+              <textarea name="message" rows="4" class="form-control" placeholder="Write your message here..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn wb-btn w-100">
+              Send Message ⚓
+             </button>
+
+          </form>
+          <p class="text-center text-muted mt-4 small">
+             “A man’s dream never dies.” — Whitebeard
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Add Address{% endblock title %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+
+          <h4 class="mb-4 text-center">Add Delivery Address</h4>
+
+          <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="fullname" class="form-control" placeholder="John Doe" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <textarea name="address" class="form-control" rows="3" placeholder="House no, Street, Area" required></textarea>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" placeholder="9876543210" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">City</label>
+                <input type="text" name="city" class="form-control" placeholder="Kochi" required>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Pincode</label>
+              <input type="text" name="pincode" class="form-control" placeholder="682001" required>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success btn-lg">
+                Save Address
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock content %}

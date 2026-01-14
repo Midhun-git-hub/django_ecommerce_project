@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3 class="mb-4">📦 Orders Dashboard</h3>
+
+    {% for order in orders %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header d-flex justify-content-between">
+            <strong>Order #{{ order.id }}</strong>
+            <span class="badge bg-primary">{{ order.status }}</span>
+        </div>
+
+        <div class="card-body">
+            <p>
+                <strong>User:</strong> {{ order.user.username }} <br>
+                <strong>Total:</strong> ₹{{ order.total_price }} <br>
+                <strong>Date:</strong> {{ order.created_at }}
+            </p>
+
+            <hr>
+
+            <h6>Items:</h6>
+            <ul class="list-group">
+                {% for item in order.items.all %}
+                <li class="list-group-item d-flex justify-content-between">
+                    {{ item.product_name }} × {{ item.quantity }}
+                    <span>₹{{ item.price }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <div class="mt-3">
+                <a href="{% url 'update_order_status' order.id %}" class="btn btn-sm btn-outline-dark">
+                    Update Status
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No orders found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

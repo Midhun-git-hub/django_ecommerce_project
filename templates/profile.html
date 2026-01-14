@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+
+          <h4 class="mb-3">My Profile</h4>
+
+          <p class="mb-1"><strong>Username:</strong> {{ user.username }}</p>
+          <p class="mb-3"><strong>Email:</strong> {{ user.email }}</p>
+
+          <hr>
+
+          <div class="d-grid gap-2">
+            <a href="{% url 'orders' %}" class="btn btn-outline-primary">
+              My Orders
+            </a>
+            <a href="{% url 'view_address' %}" class="btn btn-outline-success">
+              My Addresses
+            </a>
+            <a href="{% url 'password_change' %}" class="btn btn-outline-warning">
+              Change Password
+            </a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-danger">
+              Logout
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

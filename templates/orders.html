@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}MY ORDERS{% endblock title %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+  <h3 class="mb-4">My Orders</h3>
+
+  {% if orders %}
+    {% for order in orders %}
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+
+          <div class="d-flex justify-content-between">
+            <div>
+              <strong>Order #{{ order.id }}</strong><br>
+              <small class="text-muted">
+                {{ order.created_at|date:"d M Y, h:i A" }}
+              </small>
+            </div>
+
+            <div class="text-end">
+              <span class="badge bg-primary">{{ order.status }}</span><br>
+              <strong>₹{{ order.total_price }}</strong>
+            </div>
+          </div>
+
+          <hr>
+
+          {% for item in order.items.all %}
+  <div class="d-flex align-items-center mb-3">
+
+    {% if item.product_image %}
+      <img src="{{ item.product_image.url }}" width="60" class="me-3 rounded">
+    {% else %}
+      <img src="{% static 'images/no-image.png' %}" width="60">
+    {% endif %}
+
+    <div>
+      <div>{{ item.product_name }}</div>
+      <small>
+        ₹{{ item.price }} × {{ item.quantity }}
+        = ₹{{ item.get_total }}
+      </small>
+    </div>
+
+  </div>
+{% endfor %}
+
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>You have not placed any orders yet.</p>
+  {% endif %}
+</div>
+{% endblock content %}

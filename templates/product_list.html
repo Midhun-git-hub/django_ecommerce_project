@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Product List{% endblock title %}
+
+{% block content %}
+<div class='text-center'>
+    <h2 class="my-4">
+        {% if category %}
+            Products in : {{ category.name }}
+        {% else %}
+            All Products
+        {% endif %}
+
+        {% if query %}
+            - Search results for {{ query }}
+        {% endif %}
+    </h2>
+
+<div class="container mt-4">
+    
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 product-card">
+
+                <!-- Product Image -->
+                <div class="product-img-wrapper">
+                    <img src="{{ product.product_image.url }}" class="card-img-top" alt="{{ product.name }}">
+                </div>
+
+                <!-- Product Info -->
+                <div class="card-body text-center">
+                    <h6 class="card-title">{{ product.name }}</h6>
+                    <p class="fw-bold mb-2">₹{{ product.price }}</p>
+                    <div class="d-flex gap-2">
+                       <a href="{% url 'product_detail' product.id %}" class="btn btn-sm btn-primary flex-grow-1">
+                           <span class='d-none d-xl-inline'>
+                               View Details
+                           </span>
+                             <i class="fa-solid fa-circle-info"></i>
+                       </a>
+
+                       <a href="{% url 'add_to_cart' product.id %}" class="btn btn-sm btn-success flex-grow-1">
+                           <span class='d-none d-xl-inline'>
+                               Add to Cart
+                            </span> 
+                            <i class="fa fa-cart-plus"></i>
+                       </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No products available</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}
