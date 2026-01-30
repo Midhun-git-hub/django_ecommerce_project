@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+import cloudinary.uploader
+import cloudinary.api
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -42,8 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ecomapp',
-    "crispy_forms",
-    "crispy_bootstrap5",
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -137,9 +141,19 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+import cloudinary
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+cloudinary.config(
+  cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+  api_key=os.environ.get("CLOUDINARY_API_KEY"),
+  api_secret=os.environ.get("CLOUDINARY_API_SECRET")
+)
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
