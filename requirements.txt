@@ -13,6 +13,7 @@ idna==3.11
 packaging==26.0
 pillow==12.1.0
 psycopg2-binary==2.9.11
+python-decouple==3.8
 python-dotenv==1.2.1
 razorpay==2.0.0
 requests==2.32.5

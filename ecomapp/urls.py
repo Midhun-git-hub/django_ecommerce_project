@@ -29,6 +29,8 @@ urlpatterns = [
 
     path('checkout/',views.checkout,name='checkout'),
     
+    path('verify_payment/',views.verify_payment,name='verify_payment'),
+    
     path('add_address/',views.add_address,name='add_address'),
     
     path('order_success/',views.order_success,name='order_success'),

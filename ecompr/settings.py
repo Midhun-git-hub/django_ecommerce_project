@@ -14,6 +14,7 @@ from pathlib import Path
 import dj_database_url
 import cloudinary.uploader
 import cloudinary.api
+from decouple import config
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -171,3 +172,5 @@ DEFAULT_FROM_EMAIL = 'Whiteboard@resend.dev'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+RAZORPAY_KEY_ID = config("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET = config("RAZORPAY_KEY_SECRET")

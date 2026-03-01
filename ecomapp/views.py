@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from . models import *
 from . forms import *
@@ -9,8 +10,11 @@ from django.contrib import messages
 from datetime import datetime
 from django.db.models import Q
 from django.core.mail import send_mail
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from decouple import config
 import razorpay
+import json
 # Create your views here.
 
 # home page view
@@ -156,18 +160,36 @@ def checkout(request):
 
     total = sum(item.total_price for item in cart_items)
 
-    if not Address.objects.filter(user=request.user).exists():
+    addresses = Address.objects.filter(user=request.user)
+
+    if not addresses.exists():
         messages.warning(request, "Please add a delivery address before checkout.")
         return redirect('add_address')
 
-    if request.method == "POST":
+    # 🔹 Razorpay Client using ENV keys
+    client = razorpay.Client(auth=(
+        settings.RAZORPAY_KEY_ID,
+        settings.RAZORPAY_KEY_SECRET
+    ))
+
+    razorpay_order = client.order.create({
+        "amount": int(total * 100),
+        "currency": "INR",
+        "payment_capture": 1
+    })
+
+    # 🔹 COD
+    if request.method == "POST" and request.POST.get("action") == "cod":
+
         address_id = request.POST.get("address")
         address = Address.objects.get(id=address_id, user=request.user)
 
         order = Order.objects.create(
             user=request.user,
             address=address,
-            total_price=total
+            total_price=total,
+            payment_method="COD",
+            payment_status="Pending"
         )
 
         for item in cart_items:
@@ -179,19 +201,72 @@ def checkout(request):
                 quantity=item.quantity
             )
 
-        cart_items.delete()  # clear cart
+        cart_items.delete()
 
         return redirect('order_success')
-
-    addresses = Address.objects.filter(user=request.user)
 
     return render(request, 'checkout.html', {
         'cart_items': cart_items,
         'total': total,
-        'addresses': addresses
+        'addresses': addresses,
+        'razorpay_key': settings.RAZORPAY_KEY_ID,
+        'razorpay_amount': razorpay_order['amount'],
+        'razorpay_order_id': razorpay_order['id'],
     })
 
+# verify payment view
+@csrf_exempt
+@login_required
+def verify_payment(request):
 
+    if request.method == "POST":
+
+        data = json.loads(request.body)
+
+        client = razorpay.Client(auth=(
+            settings.RAZORPAY_KEY_ID,
+            settings.RAZORPAY_KEY_SECRET
+        ))
+
+        try:
+            client.utility.verify_payment_signature({
+                'razorpay_order_id': data['razorpay_order_id'],
+                'razorpay_payment_id': data['razorpay_payment_id'],
+                'razorpay_signature': data['razorpay_signature']
+            })
+
+            cart = Cart.objects.get(user=request.user)
+            cart_items = cart.items.all()
+            total = sum(item.total_price for item in cart_items)
+
+            address = Address.objects.get(
+                id=data['address_id'],
+                user=request.user
+            )
+
+            order = Order.objects.create(
+                user=request.user,
+                address=address,
+                total_price=total,
+                payment_method="ONLINE",
+                payment_status="Paid"
+            )
+
+            for item in cart_items:
+                OrderItem.objects.create(
+                    order=order,
+                    product_name=item.product.name,
+                    product_image=item.product.product_image,
+                    price=item.product.price,
+                    quantity=item.quantity
+                )
+
+            cart_items.delete()
+
+            return JsonResponse({"status": "success"})
+
+        except Exception:
+            return JsonResponse({"status": "failed"})
 
 # order success page
 @login_required

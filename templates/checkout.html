@@ -4,14 +4,17 @@
 <div class="container mt-5">
   <h3>Checkout</h3>
 
-  <form method="POST">
+  <form method="POST" id="checkout-form">
     {% csrf_token %}
 
     <h5>Select Address</h5>
     {% for address in addresses %}
       <div class="form-check">
-        <input class="form-check-input" type="radio"
-               name="address" value="{{ address.id }}" required>
+        <input class="form-check-input address-radio"
+               type="radio"
+               name="address"
+               value="{{ address.id }}"
+               required>
         <label class="form-check-label">
           {{ address.fullname }}, {{ address.address }},
           {{ address.city }} - {{ address.pincode }}
@@ -35,10 +38,68 @@
 
     <h5 class="text-end mt-3">Total: ₹{{ total }}</h5>
 
-    <button class="btn btn-primary mt-3 w-100">
+    <hr>
+
+    <!-- COD Button -->
+    <button type="submit"
+            name="action"
+            value="cod"
+            class="btn btn-primary mt-3 w-100">
       Place Order (COD)
     </button>
+
+    <!-- Razorpay Button -->
+    <button type="button"
+            id="rzp-button"
+            class="btn btn-success mt-2 w-100">
+      Pay ₹{{ total }} Online
+    </button>
+
   </form>
 </div>
+
+<!-- Razorpay Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.getElementById("rzp-button").onclick = function () {
+
+    let selectedAddress = document.querySelector("input[name='address']:checked");
+
+    if (!selectedAddress) {
+        alert("Please select an address.");
+        return;
+    }
+
+    var options = {
+        "key": "{{ razorpay_key }}",
+        "amount": "{{ razorpay_amount }}",
+        "currency": "INR",
+        "name": "Your Store",
+        "description": "Order Payment",
+        "order_id": "{{ razorpay_order_id }}",
+        "handler": function (response) {
+
+            fetch("{% url 'verify_payment' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    address_id: selectedAddress.value
+                })
+            })
+            .then(res => window.location.href = "{% url 'order_success' %}");
+        }
+    };
+
+    var rzp = new Razorpay(options);
+    rzp.open();
+};
+</script>
 
 {% endblock %}
