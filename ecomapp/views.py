@@ -188,8 +188,7 @@ def checkout(request):
             user=request.user,
             address=address,
             total_price=total,
-            payment_method="COD",
-            payment_status="Pending"
+            status="PENDING"
         )
 
         for item in cart_items:
@@ -248,8 +247,9 @@ def verify_payment(request):
                 user=request.user,
                 address=address,
                 total_price=total,
-                payment_method="ONLINE",
-                payment_status="Paid"
+                status="PAID",
+                razorpay_order_id=data['razorpay_order_id'],
+                razorpay_payment_id=data['razorpay_payment_id']
             )
 
             for item in cart_items:
